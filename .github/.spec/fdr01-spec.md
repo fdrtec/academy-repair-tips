@@ -26,6 +26,9 @@ Implementar o fluxo completo de cadastro, consulta, atualização e remoção do
 - Utilizar MapStruct para conversão entre DTOs e entidade.
 - Preferir uma abordagem com reflection para associar os campos de forma mais genérica, considerando a entidade JPA.
 - Utilizar Lombok para reduzir boilerplate.
+- Implementar uma camada global de tratamento de exceções no Spring usando @ControllerAdvice e/ou @RestControllerAdvice.
+- Retornar respostas padronizadas com Problem Details, incluindo status, título, detalhe e possíveis extensões relevantes.
+- Tratar, no mínimo, exceções de recurso não encontrado, validação de entrada e erro interno inesperado.
 - Evitar comentários no código.
 
 ## Critérios de aceite
