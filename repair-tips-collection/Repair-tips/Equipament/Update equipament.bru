@@ -1,0 +1,25 @@
+meta {
+  name: Update equipament
+  type: http
+  seq: 4
+}
+
+put {
+  url: http://localhost:8080/api/equipaments/1
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "name": "HP LaserJet Pro M404dn Updated",
+    "brand": "HP",
+    "category": "PRINTER",
+    "type": "LASER",
+    "partIds": [1]
+  }
+}
