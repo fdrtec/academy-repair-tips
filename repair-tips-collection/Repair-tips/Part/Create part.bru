@@ -1,11 +1,11 @@
 meta {
-  name: Criar peca
+  name: Create part
   type: http
   seq: 1
 }
 
 post {
-  url: http://localhost:8080/api/pecas
+  url: http://localhost:8080/api/parts
   body: json
   auth: none
 }
@@ -16,7 +16,7 @@ headers {
 
 body:json {
   {
-    "nome": "Filtro de ar",
-    "numero": "12345"
+    "name": "Air filter",
+    "number": "12345"
   }
 }

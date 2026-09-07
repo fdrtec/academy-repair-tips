@@ -1,152 +1,152 @@
-# Guia Pratico de GitHub Copilot
+# Practical GitHub Copilot Guide
 
-## Como usar spec, instructions, prompt, skill e agent com eficiencia
+## How to use specs, instructions, prompts, skills, and agents effectively
 
-Este guia mostra como estruturar o uso do GitHub Copilot de forma profissional, previsivel e economica em contexto. A ideia central e simples: a qualidade da IA depende menos de "prompts magicos" e mais de uma boa arquitetura de contexto.
+This guide shows how to structure GitHub Copilot usage professionally, predictably, and efficiently in terms of context. The central idea is simple: AI quality depends less on "magic prompts" and more on good context architecture.
 
-## Visao geral
+## Overview
 
-Para usar todo o poder do Copilot, pense em cinco camadas:
+To use Copilot's full power, think in five layers:
 
-- `spec`: define o que precisa ser construido
-- `instructions`: definem como o trabalho deve ser feito
-- `prompt`: dispara uma tarefa especifica
-- `skill`: encapsula um workflow especializado
-- `agent`: define um especialista com comportamento e ferramentas proprios
+- `spec`: defines what needs to be built
+- `instructions`: define how the work should be done
+- `prompt`: starts a specific task
+- `skill`: encapsulates a specialized workflow
+- `agent`: defines a specialist with its own behavior and tools
 
-Se essas cinco camadas estiverem bem organizadas, o Copilot fica mais preciso, gasta menos tokens e produz respostas mais consistentes.
+When these five layers are well organized, Copilot becomes more precise, uses fewer tokens, and produces more consistent answers.
 
 ---
 
-## 1. O que e cada conceito
+## 1. What each concept means
 
 ### Spec
 
-`spec` nao e, em geral, um primitivo oficial do Copilot como `prompt`, `skill` ou `instructions`. Ele e um artefato de engenharia: uma especificacao funcional, tecnica ou de negocio.
+`spec` is generally not an official Copilot primitive like `prompt`, `skill`, or `instructions`. It is an engineering artifact: a functional, technical, or business specification.
 
-A spec responde:
+A spec answers:
 
-- o que deve ser feito
-- por que deve ser feito
-- quais regras precisam ser respeitadas
-- quais criterios de aceite definem sucesso
+- what must be done
+- why it must be done
+- which rules must be followed
+- which acceptance criteria define success
 
-Exemplos de spec:
+Examples of specs:
 
-- requisito funcional
+- functional requirement
 - RFC
 - ADR
-- contrato OpenAPI
-- checklist de aceite
-- fluxo de negocio
+- OpenAPI contract
+- acceptance checklist
+- business workflow
 
-Exemplo de estrutura:
+Example structure:
 
 ```md
-# Feature Spec: Cadastro de Cliente
+# Feature Spec: Customer Registration
 
-## Objetivo
+## Objective
 
-Permitir cadastro de cliente PF com validacao de CPF e idempotencia.
+Allow individual customer registration with CPF validation and idempotency.
 
-## Regras
+## Rules
 
-- CPF deve ser valido
-- E-mail deve ser unico
-- Requisicao repetida com a mesma chave de idempotencia nao pode duplicar registro
+- CPF must be valid
+- Email must be unique
+- A repeated request with the same idempotency key must not duplicate the record
 
-## Criterios de aceite
+## Acceptance Criteria
 
-- Retornar 201 no primeiro cadastro
-- Retornar 200 em repeticao idempotente
-- Retornar 409 quando e-mail ja existir com outra identidade
+- Return 201 for the first registration
+- Return 200 for an idempotent retry
+- Return 409 when the email already belongs to another identity
 ```
 
 ### Instructions
 
-`instructions` sao regras de trabalho. Elas nao definem o requisito do negocio; elas definem como o agente deve operar naquele contexto.
+`instructions` are work rules. They do not define the business requirement; they define how the agent should operate in that context.
 
-Elas servem para:
+They are useful for:
 
-- padroes arquiteturais
-- convencoes de codigo
-- regras de teste
-- padroes de documentacao
-- comandos de build
-- restricoes tecnicas
+- architectural patterns
+- code conventions
+- testing rules
+- documentation patterns
+- build commands
+- technical constraints
 
-Ha dois tipos principais:
+There are two main types:
 
-- `copilot-instructions.md` ou `AGENTS.md`: regras gerais do projeto
-- `*.instructions.md`: regras especificas por linguagem, pasta, stack ou tipo de tarefa
+- `copilot-instructions.md` or `AGENTS.md`: general project rules
+- `*.instructions.md`: rules specific to a language, folder, stack, or task type
 
 ### Prompt
 
-`prompt` e uma tarefa reutilizavel. Ele serve para executar algo especifico e recorrente.
+A `prompt` is a reusable task. It is used to perform something specific and recurring.
 
-Exemplos:
+Examples:
 
-- gerar testes
-- revisar codigo
-- documentar feature
-- criar diagrama Mermaid
-- investigar conflito de dependencia
+- generate tests
+- review code
+- document a feature
+- create a Mermaid diagram
+- investigate a dependency conflict
 
-Prompt bom e focado em uma tarefa so.
+A good prompt focuses on one task.
 
 ### Skill
 
-`skill` e um workflow especializado. E melhor que um prompt quando a tarefa tem varias etapas, material de apoio, templates, scripts ou referencias.
+A `skill` is a specialized workflow. It is better than a prompt when the task has several steps, supporting material, templates, scripts, or references.
 
-Exemplos:
+Examples:
 
-- auditoria de arquitetura
-- diagnostico de incidentes
-- analise de dependencias
-- preparacao de release
-- documentacao tecnica padronizada
+- architecture audit
+- incident diagnosis
+- dependency analysis
+- release preparation
+- standardized technical documentation
 
 ### Agent
 
-`agent` e um especialista configurado. Ele define:
+An `agent` is a configured specialist. It defines:
 
-- papel
-- limites
-- ferramentas permitidas
-- estilo de execucao
-- possiveis handoffs
+- role
+- boundaries
+- allowed tools
+- execution style
+- possible handoffs
 
-Use agent quando o problema nao e so a tarefa, mas tambem o comportamento desejado de quem executa.
-
----
-
-## 2. Quando usar cada um
-
-Use `spec` quando a IA precisa entender o dominio e os criterios de sucesso.
-
-Use `instructions` quando voce quer reduzir ambiguidade recorrente no projeto.
-
-Use `prompt` quando a tarefa e repetivel e tem inicio e fim claros.
-
-Use `skill` quando existe um processo especializado com mais de uma etapa.
-
-Use `agent` quando voce quer isolar comportamento, ferramentas e responsabilidade.
-
-Resumo rapido:
-
-- Se responde "o que construir": `spec`
-- Se responde "como trabalhamos aqui": `instructions`
-- Se responde "faca esta tarefa agora": `prompt`
-- Se responde "siga este workflow": `skill`
-- Se responde "qual especialista executa": `agent`
+Use an agent when the problem involves not only the task, but also the desired behavior of its executor.
 
 ---
 
-## 3. Como nomear specs para o Copilot entender melhor
+## 2. When to use each one
 
-O Copilot nao tem um tipo oficial de arquivo chamado `spec`. Ele entende especificacoes como contexto textual bem estruturado. Por isso, a melhor estrategia e usar nomes claros e previsiveis.
+Use `spec` when AI needs to understand the domain and success criteria.
 
-Os termos mais reconheciveis costumam ser:
+Use `instructions` when you want to reduce recurring ambiguity in the project.
+
+Use `prompt` when the task is repeatable and has a clear beginning and end.
+
+Use `skill` when there is a specialized process with more than one step.
+
+Use `agent` when you want to isolate behavior, tools, and responsibility.
+
+Quick summary:
+
+- If it answers "what to build": `spec`
+- If it answers "how we work here": `instructions`
+- If it answers "perform this task now": `prompt`
+- If it answers "follow this workflow": `skill`
+- If it answers "which specialist executes": `agent`
+
+---
+
+## 3. How to name specs so Copilot understands them better
+
+Copilot does not have an official file type called `spec`. It understands specifications as well-structured textual context. Therefore, the best strategy is to use clear and predictable names.
+
+The most recognizable terms tend to be:
 
 - `spec`
 - `specification`
@@ -159,33 +159,33 @@ Os termos mais reconheciveis costumam ser:
 - `acceptance criteria`
 - `OpenAPI contract`
 
-Boas convencoes de nome de arquivo:
+Good file-naming conventions:
 
-- `docs/specs/cadastro-cliente.md`
-- `docs/specs/feature-cadastro-cliente.md`
-- `docs/requirements/cadastro-cliente.md`
-- `docs/adr/0001-arquitetura.md`
-- `docs/rfc/rfc-novo-fluxo.md`
+- `docs/specs/customer-registration.md`
+- `docs/specs/feature-customer-registration.md`
+- `docs/requirements/customer-registration.md`
+- `docs/adr/0001-architecture.md`
+- `docs/rfc/rfc-new-flow.md`
 - `docs/api/openapi.yaml`
 
-Se voce precisa escolher um nome padrao unico para o time, `Feature Spec` costuma ser o melhor equilibrio entre clareza funcional e reconhecimento por IA.
+If you need one standard name for the team, `Feature Spec` is usually the best balance between functional clarity and recognition by AI.
 
-Exemplo recomendado:
+Recommended example:
 
 ```md
-# Feature Spec: Cadastro de Cliente
+# Feature Spec: Customer Registration
 
-## Objetivo
-## Contexto
-## Regras de Negocio
-## Restricoes Tecnicas
-## Criterios de Aceite
-## Fora de Escopo
+## Objective
+## Context
+## Business Rules
+## Technical Constraints
+## Acceptance Criteria
+## Out of Scope
 ```
 
-Se voce quiser aumentar a chance de o Copilot puxar esse contexto em customizacoes, use esses termos tambem nas descricoes de prompts, instructions e skills.
+To increase the chance that Copilot pulls this context into customizations, use these terms in prompt, instruction, and skill descriptions as well.
 
-Exemplo de descricao eficaz:
+Example of an effective description:
 
 ```yaml
 description: "Use when implementing a feature from a spec, requirements document, ADR, or acceptance criteria"
@@ -193,124 +193,124 @@ description: "Use when implementing a feature from a spec, requirements document
 
 ---
 
-## 4. Estrutura ideal de um workspace
+## 4. Ideal workspace structure
 
-Uma estrutura madura para projetos com GitHub Copilot pode ser:
+A mature structure for projects using GitHub Copilot can be:
 
 ```text
 my-project/
-├─ .github/
-│  ├─ copilot-instructions.md
-│  ├─ instructions/
-│  │  ├─ backend.instructions.md
-│  │  ├─ frontend.instructions.md
-│  │  └─ testing.instructions.md
-│  ├─ prompts/
-│  │  ├─ gerar-testes.prompt.md
-│  │  ├─ revisar-codigo.prompt.md
-│  │  └─ documentar-feature.prompt.md
-│  ├─ agents/
-│  │  ├─ reviewer.agent.md
-│  │  └─ architect.agent.md
-│  └─ skills/
-│     ├─ architecture-audit/
-│     │  ├─ SKILL.md
-│     │  ├─ references/
-│     │  │  ├─ checklist.md
-│     │  │  └─ heuristics.md
-│     │  └─ assets/
-│     │     └─ topology-template.md
-│     └─ release-readiness/
-│        ├─ SKILL.md
-│        └─ references/
-│           └─ gates.md
-├─ docs/
-│  ├─ specs/
-│  │  ├─ feature-x.md
-│  │  └─ billing-reconciliation.md
-│  ├─ adr/
-│  │  ├─ 0001-architecture.md
-│  │  └─ 0002-observability.md
-│  └─ api/
-│     └─ openapi.yaml
-└─ src/
+|- .github/
+|  |- copilot-instructions.md
+|  |- instructions/
+|  |  |- backend.instructions.md
+|  |  |- frontend.instructions.md
+|  |  `- testing.instructions.md
+|  |- prompts/
+|  |  |- generate-tests.prompt.md
+|  |  |- review-code.prompt.md
+|  |  `- document-feature.prompt.md
+|  |- agents/
+|  |  |- reviewer.agent.md
+|  |  `- architect.agent.md
+|  `- skills/
+|     |- architecture-audit/
+|     |  |- SKILL.md
+|     |  |- references/
+|     |  |  |- checklist.md
+|     |  |  `- heuristics.md
+|     |  `- assets/
+|     |     `- topology-template.md
+|     `- release-readiness/
+|        |- SKILL.md
+|        `- references/
+|           `- gates.md
+|- docs/
+|  |- specs/
+|  |  |- feature-x.md
+|  |  `- billing-reconciliation.md
+|  |- adr/
+|  |  |- 0001-architecture.md
+|  |  `- 0002-observability.md
+|  `- api/
+|     `- openapi.yaml
+`- src/
 ```
 
-Essa organizacao separa o requisito, a regra, a tarefa, o workflow e o especialista.
+This organization separates the requirement, rule, task, workflow, and specialist.
 
 ---
 
-## 5. Como essas camadas se combinam
+## 5. How these layers combine
 
-O Copilot funciona melhor quando o contexto e montado em camadas.
+Copilot works best when context is assembled in layers.
 
-Ordem conceitual:
+Conceptual order:
 
-1. contexto base da IDE e do modo atual
-2. instrucoes globais do projeto
-3. instrucoes especificas por arquivo, pasta ou stack
-4. agente selecionado
-5. prompt executado
-6. skill carregada sob demanda
-7. spec anexada ou referenciada
+1. IDE and current-mode base context
+2. global project instructions
+3. file-, folder-, or stack-specific instructions
+4. selected agent
+5. executed prompt
+6. on-demand skill
+7. attached or referenced spec
 
-Em termos praticos:
+In practice:
 
-- a `spec` informa o problema
-- as `instructions` restringem o modo de implementacao
-- o `prompt` diz o que executar agora
-- a `skill` guia um procedimento
-- o `agent` controla o comportamento do executor
+- the `spec` describes the problem
+- `instructions` constrain the implementation approach
+- the `prompt` says what to execute now
+- the `skill` guides a procedure
+- the `agent` controls executor behavior
 
 ---
 
-## 6. Exemplo completo de montagem
+## 6. Complete assembly example
 
-Suponha um backend Java com APIs REST, testes e documentacao.
+Suppose you have a Java backend with REST APIs, tests, and documentation.
 
 ### 6.1 Spec
 
 ```md
-# Feature Spec: Cadastro de Cliente
+# Feature Spec: Customer Registration
 
-## Objetivo
+## Objective
 
-Permitir cadastro de cliente PF com validacao de CPF e idempotencia.
+Allow individual customer registration with CPF validation and idempotency.
 
-## Regras
+## Rules
 
-- CPF deve ser valido
-- E-mail deve ser unico
-- Requisicao repetida com mesma chave de idempotencia nao pode duplicar registro
+- CPF must be valid
+- Email must be unique
+- A repeated request with the same idempotency key must not duplicate the record
 
-## Criterios de aceite
+## Acceptance Criteria
 
-- Retornar 201 no primeiro cadastro
-- Retornar 200 com mesmo payload em repeticao idempotente
-- Retornar 409 quando e-mail ja existir com outra identidade
+- Return 201 for the first registration
+- Return 200 with the same payload for an idempotent retry
+- Return 409 when the email already belongs to another identity
 ```
 
-### 6.2 Instrucao global do projeto
+### 6.2 Global project instruction
 
 ```md
 # Project Guidelines
 
 ## Architecture
 
-Use arquitetura hexagonal.
-Adapters nao podem conter regra de negocio.
+Use hexagonal architecture.
+Adapters must not contain business rules.
 
 ## Build and Test
 
-Antes da suite completa, prefira testes focados no slice alterado.
+Before the full suite, prefer focused tests for the changed slice.
 
 ## Conventions
 
-Favor injecao por construtor.
-Evite logica em controllers.
+Prefer constructor injection.
+Avoid logic in controllers.
 ```
 
-### 6.3 Instrucao especifica para backend
+### 6.3 Backend-specific instruction
 
 ```md
 ---
@@ -319,32 +319,32 @@ applyTo: "src/main/java/**, src/test/java/**"
 ---
 # Backend Java Rules
 
-- Use AssertJ nos testes
-- Prefira nomes de teste descritivos
-- Servicos de aplicacao nao devem acessar infraestrutura diretamente
-- Trate nulls explicitamente nas bordas
+- Use AssertJ in tests
+- Prefer descriptive test names
+- Application services must not access infrastructure directly
+- Handle nulls explicitly at boundaries
 ```
 
-### 6.4 Prompt reutilizavel
+### 6.4 Reusable prompt
 
 ```md
 ---
 description: "Generate unit tests for a selected backend class"
-name: "Gerar testes unitarios"
+name: "Generate unit tests"
 agent: "agent"
-argument-hint: "Classe ou arquivo alvo"
+argument-hint: "Target class or file"
 ---
-Gere testes unitarios para o codigo selecionado.
+Generate unit tests for the selected code.
 
-Requisitos:
+Requirements:
 
-- cobrir fluxo feliz
-- cobrir erros e bordas
-- seguir padrao do projeto
-- evitar mocks desnecessarios
+- cover the happy path
+- cover errors and edge cases
+- follow the project pattern
+- avoid unnecessary mocks
 ```
 
-### 6.5 Skill especializada
+### 6.5 Specialized skill
 
 ```md
 ---
@@ -355,23 +355,23 @@ description: "Audit project architecture, identify boundaries, dependencies, ant
 
 ## When to Use
 
-- Revisar estrutura do projeto
-- Validar aderencia arquitetural
-- Produzir visao de componentes
+- Review project structure
+- Validate architectural compliance
+- Produce a component view
 
 ## Procedure
 
-1. Ler a spec ou ADRs relevantes
-2. Identificar camadas e dependencias
-3. Verificar violacoes de boundary
-4. Gerar resumo com riscos e recomendacoes
+1. Read the relevant specs or ADRs
+2. Identify layers and dependencies
+3. Check for boundary violations
+4. Generate a summary with risks and recommendations
 
 ## References
 
-Use os arquivos em ./references/ para checklist e heuristicas.
+Use the files in ./references/ for checklists and heuristics.
 ```
 
-### 6.6 Agent especializado
+### 6.6 Specialized agent
 
 ```md
 ---
@@ -393,148 +393,148 @@ Return:
 
 1. architecture summary
 2. risks
-3. missing docs
+3. missing documentation
 4. recommended next actions
 ```
 
 ---
 
-## 7. Como economizar tokens e aumentar precisao
+## 7. How to save tokens and increase precision
 
-Esse e o ponto central de eficiencia.
+This is the central efficiency point.
 
-A regra de ouro e separar por frequencia de uso.
+The rule of thumb is to separate content by usage frequency.
 
-### Coloque em `spec`
+### Put in `spec`
 
-- objetivo
-- regra de negocio
-- criterio de aceite
-- restricoes funcionais
+- objective
+- business rule
+- acceptance criterion
+- functional constraints
 
-### Coloque em `copilot-instructions.md`
+### Put in `copilot-instructions.md`
 
-- convencoes universais do projeto
-- arquitetura de alto nivel
-- comandos essenciais
-- padroes que valem quase sempre
+- universal project conventions
+- high-level architecture
+- essential commands
+- patterns that apply almost always
 
-### Coloque em `*.instructions.md`
+### Put in `*.instructions.md`
 
-- regras por stack
-- regras por pasta
-- convencoes especificas por tipo de arquivo
-- detalhes que nao precisam estar sempre carregados
+- stack-specific rules
+- folder-specific rules
+- conventions for specific file types
+- details that do not need to be loaded all the time
 
-### Coloque em `*.prompt.md`
+### Put in `*.prompt.md`
 
-- tarefa operacional especifica
-- formato de saida esperado
-- parametros variaveis
+- specific operational task
+- expected output format
+- variable parameters
 
-### Coloque em `SKILL.md`
+### Put in `SKILL.md`
 
 - workflow
 - checklist
 - templates
-- referencias
-- materiais auxiliares
+- references
+- supporting material
 
-### Coloque em `*.agent.md`
+### Put in `*.agent.md`
 
-- papel
-- limites
-- ferramentas
-- comportamento desejado
+- role
+- boundaries
+- tools
+- desired behavior
 
-A logica e:
+The logic is:
 
-- contexto universal: curto e sempre relevante
-- contexto especifico: sob demanda
-- procedimento complexo: skill
-- requisito de negocio: spec
-- tarefa pontual: prompt
-
----
-
-## 8. Erros mais comuns
-
-### Colocar tudo em um arquivo so
-
-Isso dilui as instrucoes importantes e desperdica contexto.
-
-### Transformar instructions em documentacao enciclopedica
-
-Instructions devem orientar acao, nao substituir documentacao geral.
-
-### Usar regras globais para temas especificos
-
-Se so vale para certos arquivos, use `*.instructions.md` em vez de regra global.
-
-### Criar prompt para workflow complexo
-
-Se tem multiplas etapas, checklist e referencias, provavelmente deveria ser skill.
-
-### Misturar regra de negocio com padrao tecnico
-
-Regra de negocio vai para a spec.
-Padrao tecnico vai para instructions.
-
-### Criar agent sem necessidade
-
-Se um prompt ou skill resolve, nao complique com agent.
+- universal context: short and always relevant
+- specific context: on demand
+- complex procedure: skill
+- business requirement: spec
+- one-off task: prompt
 
 ---
 
-## 9. O que ja vem "pre-configurado" ao abrir a IDE
+## 8. Common mistakes
 
-Ao abrir a IDE, o Copilot ja opera com uma base de contexto do proprio produto:
+### Putting everything in one file
 
-- instrucoes internas do modo atual
-- politicas e comportamento do agente
-- ferramentas disponiveis
-- modelo selecionado
-- historico e contexto da conversa
+This dilutes important instructions and wastes context.
 
-Alem disso, se existirem customizacoes no projeto ou no perfil do usuario, elas entram conforme o tipo:
+### Turning instructions into encyclopedic documentation
 
-- `copilot-instructions.md` ou `AGENTS.md`: regras gerais
-- `*.instructions.md`: entram por relevancia ou por padrao de arquivo
-- `*.prompt.md`: aparecem como tarefas reutilizaveis
-- `SKILL.md`: podem ser descobertas e carregadas sob demanda
-- `*.agent.md`: podem ser escolhidos manualmente ou acionados por outros agentes
+Instructions should guide action, not replace general documentation.
+
+### Using global rules for specific topics
+
+If a rule applies only to certain files, use `*.instructions.md` instead of a global rule.
+
+### Creating a prompt for a complex workflow
+
+If it has multiple steps, a checklist, and references, it should probably be a skill.
+
+### Mixing business rules with technical patterns
+
+Business rules belong in the spec.
+Technical patterns belong in instructions.
+
+### Creating an agent unnecessarily
+
+If a prompt or skill solves the problem, do not complicate it with an agent.
 
 ---
 
-## 10. Escopo global vs escopo do projeto
+## 9. What comes preconfigured when opening the IDE
 
-Existem dois grandes escopos:
+When the IDE opens, Copilot already operates with a context base from the product itself:
 
-### Escopo do projeto
+- internal instructions for the current mode
+- agent policies and behavior
+- available tools
+- selected model
+- conversation history and context
 
-Fica no workspace, geralmente em `.github/`, e e compartilhado com o time.
+In addition, if project or user-profile customizations exist, they are included according to their type:
 
-Use para:
+- `copilot-instructions.md` or `AGENTS.md`: general rules
+- `*.instructions.md`: included by relevance or file pattern
+- `*.prompt.md`: appear as reusable tasks
+- `SKILL.md`: can be discovered and loaded on demand
+- `*.agent.md`: can be selected manually or triggered by other agents
 
-- padroes do projeto
-- arquitetura
-- stack do time
-- prompts uteis para todos
-- skills compartilhadas
+---
 
-### Escopo global do usuario
+## 10. Global scope vs. project scope
 
-Fica no perfil local do VS Code ou em diretorios pessoais.
+There are two major scopes:
 
-Use para:
+### Project scope
 
-- preferencias pessoais
-- estilo de resposta
-- padroes pessoais de revisao
-- prompts de uso geral
-- agents pessoais
+It lives in the workspace, usually in `.github/`, and is shared with the team.
 
-Exemplos tipicos de caminhos em Windows:
+Use it for:
+
+- project patterns
+- architecture
+- team stack
+- useful prompts for everyone
+- shared skills
+
+### User global scope
+
+It lives in the local VS Code profile or personal directories.
+
+Use it for:
+
+- personal preferences
+- response style
+- personal review patterns
+- general-purpose prompts
+- personal agents
+
+Typical path examples on Windows:
 
 ```text
 %APPDATA%\Code\User\instructions\
@@ -545,80 +545,76 @@ Exemplos tipicos de caminhos em Windows:
 %USERPROFILE%\.claude\skills\
 ```
 
-Resumo:
+Summary:
 
-- o que e do time: projeto
-- o que e sua preferencia pessoal: global
-
----
-
-## 11. Estrategia profissional de adocao
-
-Se voce quiser implantar uso maduro do Copilot em um time, siga esta ordem:
-
-1. criar `docs/specs/`
-2. criar `.github/copilot-instructions.md`
-3. criar `*.instructions.md` por stack principal
-4. criar prompts para tarefas repetidas
-5. criar 1 ou 2 skills para workflows caros
-6. criar agents so quando houver necessidade real de especializacao
-
-Essa ordem evita exagero de complexidade logo no inicio.
+- team-owned content: project scope
+- personal preferences: global scope
 
 ---
 
-## 12. Kit minimo recomendado
+## 11. Professional adoption strategy
 
-Se voce for comecar do jeito certo, um bom kit inicial seria:
+To introduce mature Copilot usage to a team, follow this order:
+
+1. create `docs/specs/`
+2. create `.github/copilot-instructions.md`
+3. create `*.instructions.md` for each main stack
+4. create prompts for repeated tasks
+5. create one or two skills for expensive workflows
+6. create agents only when there is a real need for specialization
+
+This order avoids unnecessary complexity at the beginning.
+
+---
+
+## 12. Recommended minimum kit
+
+If you are starting the right way, a good initial kit would be:
 
 ```text
 .github/
-├─ copilot-instructions.md
-├─ instructions/
-│  ├─ backend.instructions.md
-│  ├─ frontend.instructions.md
-│  └─ testing.instructions.md
-├─ prompts/
-│  ├─ gerar-testes.prompt.md
-│  ├─ revisar-codigo.prompt.md
-│  └─ documentar-feature.prompt.md
-└─ skills/
-   └─ architecture-audit/
-      ├─ SKILL.md
-      └─ references/
-         └─ checklist.md
+|- copilot-instructions.md
+|- instructions/
+|  |- backend.instructions.md
+|  |- frontend.instructions.md
+|  `- testing.instructions.md
+|- prompts/
+|  |- generate-tests.prompt.md
+|  |- review-code.prompt.md
+|  `- document-feature.prompt.md
+`- skills/
+   `- architecture-audit/
+      |- SKILL.md
+      `- references/
+         `- checklist.md
 
 docs/
-├─ specs/
-│  └─ feature-x.md
-└─ adr/
-   └─ 0001-architecture.md
+|- specs/
+|  `- feature-x.md
+`- adr/
+   `- 0001-architecture.md
 ```
 
-Esse kit ja oferece uma base forte para usar o Copilot com muito mais qualidade.
+This kit already provides a strong foundation for using Copilot with much higher quality.
 
 ---
 
-## 13. Heuristica final de decisao
+## 13. Final decision heuristic
 
-Use esta regua mental:
+Use this mental guide:
 
-- se a informacao define o produto: `spec`
-- se a informacao define a forma de trabalhar: `instructions`
-- se a informacao define uma acao reutilizavel: `prompt`
-- se a informacao define um procedimento especializado: `skill`
-- se a informacao define um especialista operacional: `agent`
+- if the information defines the product: `spec`
+- if the information defines how to work: `instructions`
+- if the information defines a reusable action: `prompt`
+- if the information defines a specialized procedure: `skill`
+- if the information defines an operational specialist: `agent`
 
 ---
 
-## Conclusao
+## Conclusion
 
-O uso mais poderoso do GitHub Copilot vem de uma arquitetura de contexto bem desenhada.
+The most powerful use of GitHub Copilot comes from a well-designed context architecture.
 
-A `spec` da clareza de negocio.
-As `instructions` reduzem ambiguidade recorrente.
-Os `prompts` aceleram tarefas repetidas.
-As `skills` transformam workflows complexos em ativos reutilizaveis.
-Os `agents` especializam comportamento e controle.
-
-Se esses elementos forem bem estruturados, o Copilot deixa de ser apenas um assistente de autocomplete e passa a funcionar como uma camada real de aceleracao de engenharia.
+The `spec` provides business clarity.
+`Instructions` reduce recurring ambiguity.
+`Prompts` accelerate repeated tasks.

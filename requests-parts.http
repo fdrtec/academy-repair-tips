@@ -1,0 +1,26 @@
+### Create part
+POST http://localhost:8080/api/parts
+Content-Type: application/json
+
+{
+  "name": "Air filter",
+  "number": "12345"
+}
+
+### Find part by id
+GET http://localhost:8080/api/parts/1
+
+### List paginated parts
+GET http://localhost:8080/api/parts?page=0&size=10
+
+### Update part
+PUT http://localhost:8080/api/parts/1
+Content-Type: application/json
+
+{
+  "name": "Updated air filter",
+  "number": "99999"
+}
+
+### Delete part
+DELETE http://localhost:8080/api/parts/1

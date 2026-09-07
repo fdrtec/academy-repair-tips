@@ -1,11 +1,11 @@
 meta {
-  name: Atualizar peca
+  name: Update part
   type: http
   seq: 4
 }
 
 put {
-  url: http://localhost:8080/api/pecas/1
+  url: http://localhost:8080/api/parts/1
   body: json
   auth: none
 }
@@ -16,7 +16,7 @@ headers {
 
 body:json {
   {
-    "nome": "Filtro de ar atualizado",
-    "numero": "99999"
+    "name": "Updated air filter",
+    "number": "99999"
   }
 }

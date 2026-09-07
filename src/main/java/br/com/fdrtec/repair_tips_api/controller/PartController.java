@@ -1,8 +1,8 @@
 package br.com.fdrtec.repair_tips_api.controller;
 
-import br.com.fdrtec.repair_tips_api.dto.PecaRequest;
-import br.com.fdrtec.repair_tips_api.dto.PecaResponse;
-import br.com.fdrtec.repair_tips_api.service.PecaService;
+import br.com.fdrtec.repair_tips_api.dto.PartRequest;
+import br.com.fdrtec.repair_tips_api.dto.PartResponse;
+import br.com.fdrtec.repair_tips_api.service.PartService;
 import jakarta.validation.Valid;
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
@@ -20,15 +20,15 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @RestController
-@RequestMapping("/api/pecas")
+@RequestMapping("/api/parts")
 @RequiredArgsConstructor
-public class PecaController {
+public class PartController {
 
-    private final PecaService service;
+    private final PartService service;
 
     @PostMapping
-    public ResponseEntity<PecaResponse> create(@Valid @RequestBody PecaRequest request) {
-        PecaResponse response = service.create(request);
+    public ResponseEntity<PartResponse> create(@Valid @RequestBody PartRequest request) {
+        PartResponse response = service.create(request);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
             .path("/{id}")
             .buildAndExpand(response.id())
@@ -37,17 +37,17 @@ public class PecaController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PecaResponse> findById(@PathVariable Long id) {
+    public ResponseEntity<PartResponse> findById(@PathVariable Long id) {
         return ResponseEntity.ok(service.findById(id));
     }
 
     @GetMapping
-    public ResponseEntity<Page<PecaResponse>> findAll(Pageable pageable) {
+    public ResponseEntity<Page<PartResponse>> findAll(Pageable pageable) {
         return ResponseEntity.ok(service.findAll(pageable));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<PecaResponse> update(@PathVariable Long id, @Valid @RequestBody PecaRequest request) {
+    public ResponseEntity<PartResponse> update(@PathVariable Long id, @Valid @RequestBody PartRequest request) {
         return ResponseEntity.ok(service.update(id, request));
     }
 

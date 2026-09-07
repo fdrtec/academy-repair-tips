@@ -11,7 +11,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import br.com.fdrtec.repair_tips_api.dto.PecaRequest;
+import br.com.fdrtec.repair_tips_api.dto.PartRequest;
+import br.com.fdrtec.repair_tips_api.repository.PartRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,66 +24,67 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 @SpringBootTest
-class PecaControllerTest {
+class PartControllerTest {
 
     @Autowired
     private WebApplicationContext webApplicationContext;
+
+    @Autowired
+    private PartRepository repository;
 
     private MockMvc mockMvc;
     private ObjectMapper objectMapper;
 
     @BeforeEach
     void setUp() {
+        repository.deleteAll();
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
         objectMapper = new ObjectMapper();
     }
 
     @Test
-    void shouldCreateAndRetrievePeca() throws Exception {
-        var request = new PecaRequest("Filtro de ar", "12345");
+    void shouldCreateAndRetrievePart() throws Exception {
+        var request = new PartRequest("Air filter", "12345");
 
-        var createResult = mockMvc.perform(post("/api/pecas")
+        var createResult = mockMvc.perform(post("/api/parts")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
             .andExpect(status().isCreated())
-            .andExpect(header().string("Location", org.hamcrest.Matchers.containsString("/api/pecas/")))
-            .andExpect(jsonPath("$.nome", is("Filtro de ar")))
-            .andExpect(jsonPath("$.numero", is("12345")));
+            .andExpect(header().string("Location", org.hamcrest.Matchers.containsString("/api/parts/")))
+            .andExpect(jsonPath("$.name", is("Air filter")))
+            .andExpect(jsonPath("$.number", is("12345")));
 
         var location = createResult.andReturn().getResponse().getHeader("Location");
 
         mockMvc.perform(get(location))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.nome", is("Filtro de ar")))
-            .andExpect(jsonPath("$.numero", is("12345")));
+            .andExpect(jsonPath("$.name", is("Air filter")))
+            .andExpect(jsonPath("$.number", is("12345")));
     }
 
     @Test
-    void shouldListPecasWithPagination() throws Exception {
-        mockMvc.perform(delete("/api/pecas/1"))
-            .andExpect(status().isNoContent());
-
-        mockMvc.perform(post("/api/pecas")
+    void shouldListPartsWithPagination() throws Exception {
+        mockMvc.perform(post("/api/parts")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(new PecaRequest("Peça 1", "1"))))
+                .content(objectMapper.writeValueAsString(new PartRequest("Part 1", "1"))))
             .andExpect(status().isCreated());
 
-        mockMvc.perform(post("/api/pecas")
+        mockMvc.perform(post("/api/parts")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(new PecaRequest("Peça 2", "2"))))
+                .content(objectMapper.writeValueAsString(new PartRequest("Part 2", "2"))))
             .andExpect(status().isCreated());
 
-        mockMvc.perform(get("/api/pecas").param("page", "0").param("size", "10"))
+        mockMvc.perform(get("/api/parts").param("page", "0").param("size", "10"))
             .andExpect(status().isOk())
             .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.content", hasSize(2)));
     }
 
     @Test
-    void shouldUpdateAndDeletePeca() throws Exception {
-        var created = mockMvc.perform(post("/api/pecas")
+    void shouldUpdateAndDeletePart() throws Exception {
+        var created = mockMvc.perform(post("/api/parts")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(new PecaRequest("Original", "001"))))
+                .content(objectMapper.writeValueAsString(new PartRequest("Original", "001"))))
             .andExpect(status().isCreated())
             .andReturn();
 
@@ -90,10 +92,10 @@ class PecaControllerTest {
 
         mockMvc.perform(put(location)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(new PecaRequest("Atualizada", "999"))))
+                .content(objectMapper.writeValueAsString(new PartRequest("Updated", "999"))))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.nome", is("Atualizada")))
-            .andExpect(jsonPath("$.numero", is("999")));
+            .andExpect(jsonPath("$.name", is("Updated")))
+            .andExpect(jsonPath("$.number", is("999")));
 
         mockMvc.perform(delete(location))
             .andExpect(status().isNoContent());
@@ -101,12 +103,12 @@ class PecaControllerTest {
 
     @Test
     void shouldReturnProblemDetailsForNotFoundAndValidation() throws Exception {
-        mockMvc.perform(get("/api/pecas/999999"))
+        mockMvc.perform(get("/api/parts/999999"))
             .andExpect(status().isNotFound())
             .andExpect(content().contentTypeCompatibleWith(MediaType.valueOf("application/problem+json")))
             .andExpect(jsonPath("$.title", is("Not Found")));
 
-        mockMvc.perform(post("/api/pecas")
+        mockMvc.perform(post("/api/parts")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{}"))
             .andExpect(status().isBadRequest())

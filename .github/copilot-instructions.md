@@ -1,33 +1,33 @@
-# Diretrizes do Projeto
+# Project Guidelines
 
 ## Language
-- Sempre responda e interaja em português-Brasil.
+- Always respond and interact in Brazilian Portuguese.
 
-## Arquitetura
-- Trate o projeto como um backend Spring em Java 25.
-- Mantenha uma estrutura em camadas clara: controller, service e repository.
-- Prefira classes e métodos pequenos e focados.
-- Aplique consistentemente os princípios SOLID e boas práticas de clean code.
-- Use padrões de projeto apenas quando eles simplificarem o domínio ou melhorarem a manutenção.
+## Architecture
+- Treat the project as a Spring backend using Java 25.
+- Maintain a clear layered structure: controller, service, and repository.
+- Prefer small, focused classes and methods.
+- Consistently apply SOLID principles and clean-code practices.
+- Use design patterns only when they simplify the domain or improve maintainability.
 
-## Design da API
-- Trabalhe em modo API-first: defina o contrato do endpoint, a request e os DTOs de response antes de implementar o fluxo de service e repository.
-- Mantenha os controllers enxutos e delegue as regras de negócio para os services.
-- Exponha endpoints REST estáveis e explícitos, com modelos de entrada e saída claros.
+## API Design
+- Work in API-first mode: define the endpoint contract, request, and response DTOs before implementing the service and repository flow.
+- Keep controllers lean and delegate business rules to services.
+- Expose stable, explicit REST endpoints with clear input and output models.
 
-## DTOs e Mapeamento
-- Use records para DTOs quando eles fizerem sentido para o caso de uso.
-- Use MapStruct para mapear entre DTOs e entidades.
-- Evite mapeamento manual quando o MapStruct conseguir expressar a transformação.
-- Mantenha os modelos de entidade separados dos modelos de transporte.
+## DTOs and Mapping
+- Use records for DTOs when they fit the use case.
+- Use MapStruct to map between DTOs and entities.
+- Avoid manual mapping when MapStruct can express the transformation.
+- Keep entity models separate from transport models.
 
-## Estilo de Código
-- Prefira código legível e que revele intenção em vez de código esperto demais.
-- Mantenha a lógica de negócio fora de controllers e repositories.
-- Nomeie classes e métodos pela intenção de domínio, não por atalhos técnicos.
-- Ao adicionar código novo, mantenha consistência com as convenções Spring já existentes no repositório.
+## Code Style
+- Prefer readable code that reveals intent over overly clever code.
+- Keep business logic out of controllers and repositories.
+- Name classes and methods after domain intent, not technical shortcuts.
+- When adding code, remain consistent with the Spring conventions already present in the repository.
 
-## Viés de Implementação
-- Prefira soluções diretas e fáceis de testar.
-- Introduza abstrações apenas quando houver um caso de uso real para elas.
-- Quando um padrão for escolhido, deixe o motivo claro na estrutura do código, e não em comentários.
+## Implementation Bias
+- Prefer direct solutions that are easy to test.
+- Introduce abstractions only when there is a real use case for them.
+- When choosing a pattern, make the reason clear in the structure, not in comments.
