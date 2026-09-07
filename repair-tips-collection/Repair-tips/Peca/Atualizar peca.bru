@@ -1,0 +1,22 @@
+meta {
+  name: Atualizar peca
+  type: http
+  seq: 4
+}
+
+put {
+  url: http://localhost:8080/api/pecas/1
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "nome": "Filtro de ar atualizado",
+    "numero": "99999"
+  }
+}
