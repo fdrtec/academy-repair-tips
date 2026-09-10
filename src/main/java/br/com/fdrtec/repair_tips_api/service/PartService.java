@@ -1,7 +1,6 @@
 package br.com.fdrtec.repair_tips_api.service;
 
-import br.com.fdrtec.repair_tips_api.dto.PartRequest;
-import br.com.fdrtec.repair_tips_api.dto.PartResponse;
+import br.com.fdrtec.repair_tips_api.dto.PartDto;
 import br.com.fdrtec.repair_tips_api.entity.Part;
 import br.com.fdrtec.repair_tips_api.mapper.PartMapper;
 import br.com.fdrtec.repair_tips_api.repository.PartRepository;
@@ -19,30 +18,30 @@ public class PartService {
     private final PartMapper mapper;
 
     @Transactional
-    public PartResponse create(PartRequest request) {
-        Part part = mapper.toEntity(request);
+    public PartDto create(PartDto dto) {
+        Part part = mapper.toEntity(dto);
         Part saved = repository.save(part);
-        return mapper.toResponse(saved);
+        return mapper.toDto(saved);
     }
 
     @Transactional(readOnly = true)
-    public PartResponse findById(Long id) {
+    public PartDto findById(Long id) {
         return repository.findById(id)
-            .map(mapper::toResponse)
+            .map(mapper::toDto)
             .orElseThrow(() -> new ResourceNotFoundException("Part", id));
     }
 
     @Transactional(readOnly = true)
-    public Page<PartResponse> findAll(Pageable pageable) {
-        return repository.findAll(pageable).map(mapper::toResponse);
+    public Page<PartDto> findAll(Pageable pageable) {
+        return repository.findAll(pageable).map(mapper::toDto);
     }
 
     @Transactional
-    public PartResponse update(Long id, PartRequest request) {
+    public PartDto update(Long id, PartDto dto) {
         Part part = repository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Part", id));
-        mapper.updateFromRequest(request, part);
-        return mapper.toResponse(repository.save(part));
+        mapper.updateFromDto(dto, part);
+        return mapper.toDto(repository.save(part));
     }
 
     @Transactional

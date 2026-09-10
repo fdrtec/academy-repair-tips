@@ -11,7 +11,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import br.com.fdrtec.repair_tips_api.dto.PartRequest;
+import br.com.fdrtec.repair_tips_api.dto.PartDto;
 import br.com.fdrtec.repair_tips_api.repository.EquipamentRepository;
 import br.com.fdrtec.repair_tips_api.repository.PartRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -49,7 +49,7 @@ class PartControllerTest {
 
     @Test
     void shouldCreateAndRetrievePart() throws Exception {
-        var request = new PartRequest("Air filter", "12345");
+        var request = new PartDto("Air filter", "12345");
 
         var createResult = mockMvc.perform(post("/api/parts")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -71,12 +71,12 @@ class PartControllerTest {
     void shouldListPartsWithPagination() throws Exception {
         mockMvc.perform(post("/api/parts")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(new PartRequest("Part 1", "1"))))
+                .content(objectMapper.writeValueAsString(new PartDto("Part 1", "1"))))
             .andExpect(status().isCreated());
 
         mockMvc.perform(post("/api/parts")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(new PartRequest("Part 2", "2"))))
+                .content(objectMapper.writeValueAsString(new PartDto("Part 2", "2"))))
             .andExpect(status().isCreated());
 
         mockMvc.perform(get("/api/parts").param("page", "0").param("size", "10"))
@@ -89,7 +89,7 @@ class PartControllerTest {
     void shouldUpdateAndDeletePart() throws Exception {
         var created = mockMvc.perform(post("/api/parts")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(new PartRequest("Original", "001"))))
+                .content(objectMapper.writeValueAsString(new PartDto("Original", "001"))))
             .andExpect(status().isCreated())
             .andReturn();
 
@@ -97,7 +97,7 @@ class PartControllerTest {
 
         mockMvc.perform(put(location)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(new PartRequest("Updated", "999"))))
+                .content(objectMapper.writeValueAsString(new PartDto("Updated", "999"))))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.name", is("Updated")))
             .andExpect(jsonPath("$.number", is("999")));

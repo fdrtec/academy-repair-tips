@@ -7,8 +7,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import br.com.fdrtec.repair_tips_api.dto.EquipamentRequest;
-import br.com.fdrtec.repair_tips_api.dto.PartRequest;
+import br.com.fdrtec.repair_tips_api.dto.EquipamentDto;
+import br.com.fdrtec.repair_tips_api.dto.PartDto;
 import br.com.fdrtec.repair_tips_api.repository.EquipamentRepository;
 import br.com.fdrtec.repair_tips_api.repository.PartRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -49,12 +49,12 @@ class EquipamentControllerTest {
     void shouldCreateAndRetrieveEquipamentWithParts() throws Exception {
         var partResult = mockMvc.perform(post("/api/parts")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(new PartRequest("Black toner", "HP-56A"))))
+                .content(objectMapper.writeValueAsString(new PartDto("Black toner", "HP-56A"))))
             .andExpect(status().isCreated())
             .andReturn();
 
         var partId = objectMapper.readTree(partResult.getResponse().getContentAsString()).get("id").asLong();
-        var request = new EquipamentRequest(
+        var request = new EquipamentDto(
             "HP LaserJet Pro M404dn",
             "HP",
             "PRINTER",

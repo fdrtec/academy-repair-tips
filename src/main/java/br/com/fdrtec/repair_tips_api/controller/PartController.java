@@ -1,11 +1,19 @@
 package br.com.fdrtec.repair_tips_api.controller;
 
-import br.com.fdrtec.repair_tips_api.dto.PartRequest;
-import br.com.fdrtec.repair_tips_api.dto.PartResponse;
+import br.com.fdrtec.repair_tips_api.dto.PartDto;
 import br.com.fdrtec.repair_tips_api.service.PartService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.headers.Header;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -21,14 +29,23 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @RestController
 @RequestMapping("/api/parts")
+@Tag(name = "Parts", description = "Operações de peças")
 @RequiredArgsConstructor
 public class PartController {
 
     private final PartService service;
 
     @PostMapping
-    public ResponseEntity<PartResponse> create(@Valid @RequestBody PartRequest request) {
-        PartResponse response = service.create(request);
+    @Operation(operationId = "createPart", summary = "Cria uma peça")
+    @ApiResponses({
+        @ApiResponse(responseCode = "201", description = "Peça criada", headers = {
+            @Header(name = "Location", description = "URI da peça criada", schema = @Schema(type = "string", format = "uri"))
+        }),
+        @ApiResponse(responseCode = "400", description = "Dados inválidos"),
+        @ApiResponse(responseCode = "500", description = "Erro interno")
+    })
+    public ResponseEntity<PartDto> create(@Valid @RequestBody PartDto dto) {
+        PartDto response = service.create(dto);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
             .path("/{id}")
             .buildAndExpand(response.id())
@@ -37,22 +54,53 @@ public class PartController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PartResponse> findById(@PathVariable Long id) {
+    @Operation(operationId = "findPartById", summary = "Busca uma peça pelo identificador")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Peça encontrada"),
+        @ApiResponse(responseCode = "404", description = "Peça não encontrada"),
+        @ApiResponse(responseCode = "500", description = "Erro interno")
+    })
+    public ResponseEntity<PartDto> findById(
+        @Parameter(in = ParameterIn.PATH, description = "Identificador da peça", example = "1", required = true)
+        @PathVariable Long id
+    ) {
         return ResponseEntity.ok(service.findById(id));
     }
 
     @GetMapping
-    public ResponseEntity<Page<PartResponse>> findAll(Pageable pageable) {
+    @Operation(operationId = "listParts", summary = "Lista peças com paginação")
+    @ApiResponse(responseCode = "200", description = "Página de peças")
+    public ResponseEntity<Page<PartDto>> findAll(@ParameterObject Pageable pageable) {
         return ResponseEntity.ok(service.findAll(pageable));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<PartResponse> update(@PathVariable Long id, @Valid @RequestBody PartRequest request) {
-        return ResponseEntity.ok(service.update(id, request));
+    @Operation(operationId = "updatePart", summary = "Atualiza uma peça")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Peça atualizada"),
+        @ApiResponse(responseCode = "400", description = "Dados inválidos"),
+        @ApiResponse(responseCode = "404", description = "Peça não encontrada"),
+        @ApiResponse(responseCode = "500", description = "Erro interno")
+    })
+    public ResponseEntity<PartDto> update(
+        @Parameter(in = ParameterIn.PATH, description = "Identificador da peça", example = "1", required = true)
+        @PathVariable Long id,
+        @Valid @RequestBody PartDto dto
+    ) {
+        return ResponseEntity.ok(service.update(id, dto));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    @Operation(operationId = "deletePart", summary = "Remove uma peça")
+    @ApiResponses({
+        @ApiResponse(responseCode = "204", description = "Peça removida"),
+        @ApiResponse(responseCode = "404", description = "Peça não encontrada"),
+        @ApiResponse(responseCode = "500", description = "Erro interno")
+    })
+    public ResponseEntity<Void> delete(
+        @Parameter(in = ParameterIn.PATH, description = "Identificador da peça", example = "1", required = true)
+        @PathVariable Long id
+    ) {
         service.delete(id);
         return ResponseEntity.noContent().build();
     }

@@ -1,7 +1,6 @@
 package br.com.fdrtec.repair_tips_api.service;
 
-import br.com.fdrtec.repair_tips_api.dto.EquipamentRequest;
-import br.com.fdrtec.repair_tips_api.dto.EquipamentResponse;
+import br.com.fdrtec.repair_tips_api.dto.EquipamentDto;
 import br.com.fdrtec.repair_tips_api.entity.Equipament;
 import br.com.fdrtec.repair_tips_api.mapper.EquipamentMapper;
 import br.com.fdrtec.repair_tips_api.repository.EquipamentRepository;
@@ -23,31 +22,31 @@ public class EquipamentService {
     private final EquipamentMapper mapper;
 
     @Transactional
-    public EquipamentResponse create(EquipamentRequest request) {
-        Equipament equipament = mapper.toEntity(request);
-        equipament.setParts(resolveParts(request.partIds()));
-        return mapper.toResponse(repository.save(equipament));
+    public EquipamentDto create(EquipamentDto dto) {
+        Equipament equipament = mapper.toEntity(dto);
+        equipament.setParts(resolveParts(dto.partIds()));
+        return mapper.toDto(repository.save(equipament));
     }
 
     @Transactional(readOnly = true)
-    public EquipamentResponse findById(Long id) {
+    public EquipamentDto findById(Long id) {
         return repository.findById(id)
-            .map(mapper::toResponse)
+            .map(mapper::toDto)
             .orElseThrow(() -> new ResourceNotFoundException("Equipament", id));
     }
 
     @Transactional(readOnly = true)
-    public Page<EquipamentResponse> findAll(Pageable pageable) {
-        return repository.findAll(pageable).map(mapper::toResponse);
+    public Page<EquipamentDto> findAll(Pageable pageable) {
+        return repository.findAll(pageable).map(mapper::toDto);
     }
 
     @Transactional
-    public EquipamentResponse update(Long id, EquipamentRequest request) {
+    public EquipamentDto update(Long id, EquipamentDto dto) {
         Equipament equipament = repository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Equipament", id));
-        mapper.updateFromRequest(request, equipament);
-        equipament.setParts(resolveParts(request.partIds()));
-        return mapper.toResponse(repository.save(equipament));
+        mapper.updateFromDto(dto, equipament);
+        equipament.setParts(resolveParts(dto.partIds()));
+        return mapper.toDto(repository.save(equipament));
     }
 
     @Transactional
