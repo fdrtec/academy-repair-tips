@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.net.URI;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -73,6 +75,23 @@ public class EquipamentController {
     @ApiResponse(responseCode = "200", description = "Página de equipamentos")
     public ResponseEntity<Page<EquipamentDto>> findAll(@ParameterObject Pageable pageable) {
         return ResponseEntity.ok(service.findAll(pageable));
+    }
+
+    @GetMapping("/count")
+    @Operation(operationId = "countEquipaments", summary = "Conta equipamentos")
+    @ApiResponse(responseCode = "200", description = "Quantidade total de equipamentos")
+    public ResponseEntity<Long> count() {
+        return ResponseEntity.ok(service.count());
+    }
+
+    @GetMapping("/search")
+    @Operation(operationId = "findEquipamentsByName", summary = "Busca equipamentos pelo nome")
+    @ApiResponse(responseCode = "200", description = "Equipamentos encontrados")
+    public ResponseEntity<List<EquipamentDto>> findByName(
+        @Parameter(description = "Nome exato do equipamento", example = "HP LaserJet Pro M404dn", required = true)
+        @RequestParam String name
+    ) {
+        return ResponseEntity.ok(service.findByName(name));
     }
 
     @PutMapping("/{id}")

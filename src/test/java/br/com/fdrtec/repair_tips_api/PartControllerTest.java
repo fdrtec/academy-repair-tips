@@ -86,6 +86,29 @@ class PartControllerTest {
     }
 
     @Test
+    void shouldCountAndFindPartsByName() throws Exception {
+        mockMvc.perform(post("/api/parts")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(new PartDto("Air filter", "12345"))))
+            .andExpect(status().isCreated());
+
+        mockMvc.perform(post("/api/parts")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(new PartDto("Black toner", "HP-56A"))))
+            .andExpect(status().isCreated());
+
+        mockMvc.perform(get("/api/parts/count"))
+            .andExpect(status().isOk())
+            .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+            .andExpect(content().string("2"));
+
+        mockMvc.perform(get("/api/parts/search").param("name", "Air filter"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$", hasSize(1)))
+            .andExpect(jsonPath("$[0].name", is("Air filter")));
+    }
+
+    @Test
     void shouldUpdateAndDeletePart() throws Exception {
         var created = mockMvc.perform(post("/api/parts")
                 .contentType(MediaType.APPLICATION_JSON)

@@ -56,6 +56,41 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PartPage'
+  /api/parts/count:
+    get:
+      tags: [Parts]
+      operationId: countParts
+      summary: Conta peças
+      description: Retorna o número total de peças ativas.
+      responses:
+        '200':
+          description: Quantidade total de peças
+          content:
+            application/json:
+              schema:
+                type: integer
+                format: int64
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /api/parts/search:
+    get:
+      tags: [Parts]
+      operationId: findPartsByName
+      summary: Busca peças pelo nome
+      description: Retorna as peças ativas cujo nome corresponde exatamente ao parâmetro informado.
+      parameters:
+        - $ref: '#/components/parameters/Name'
+      responses:
+        '200':
+          description: Peças encontradas
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Part'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
   /api/parts/{id}:
     parameters:
       - $ref: '#/components/parameters/PartId'
@@ -155,6 +190,41 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/EquipamentPage'
+  /api/equipaments/count:
+    get:
+      tags: [Equipaments]
+      operationId: countEquipaments
+      summary: Conta equipamentos
+      description: Retorna o número total de equipamentos ativos.
+      responses:
+        '200':
+          description: Quantidade total de equipamentos
+          content:
+            application/json:
+              schema:
+                type: integer
+                format: int64
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /api/equipaments/search:
+    get:
+      tags: [Equipaments]
+      operationId: findEquipamentsByName
+      summary: Busca equipamentos pelo nome
+      description: Retorna os equipamentos ativos cujo nome corresponde exatamente ao parâmetro informado.
+      parameters:
+        - $ref: '#/components/parameters/Name'
+      responses:
+        '200':
+          description: Equipamentos encontrados
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Equipament'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
   /api/equipaments/{id}:
     parameters:
       - $ref: '#/components/parameters/EquipamentId'
@@ -259,6 +329,14 @@ components:
         example: [name, desc]
       style: form
       explode: true
+    Name:
+      name: name
+      in: query
+      required: true
+      description: Nome exato usado na busca
+      schema:
+        type: string
+        minLength: 1
   headers:
     Location:
       description: URI do recurso criado

@@ -4,6 +4,7 @@ import br.com.fdrtec.repair_tips_api.dto.PartDto;
 import br.com.fdrtec.repair_tips_api.entity.Part;
 import br.com.fdrtec.repair_tips_api.mapper.PartMapper;
 import br.com.fdrtec.repair_tips_api.repository.PartRepository;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -34,6 +35,16 @@ public class PartService {
     @Transactional(readOnly = true)
     public Page<PartDto> findAll(Pageable pageable) {
         return repository.findAll(pageable).map(mapper::toDto);
+    }
+
+    @Transactional(readOnly = true)
+    public long count() {
+        return repository.count();
+    }
+
+    @Transactional(readOnly = true)
+    public List<PartDto> findByName(String name) {
+        return repository.findByName(name).stream().map(mapper::toDto).toList();
     }
 
     @Transactional

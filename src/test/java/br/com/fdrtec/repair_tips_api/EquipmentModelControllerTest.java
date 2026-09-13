@@ -81,4 +81,29 @@ class EquipamentControllerTest {
             .andExpect(jsonPath("$.id", is((int) modelId)))
             .andExpect(jsonPath("$.parts", hasSize(1)));
     }
+
+    @Test
+    void shouldCountAndFindEquipamentsByName() throws Exception {
+        var partResult = mockMvc.perform(post("/api/parts")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(new PartDto("Black toner", "HP-56A"))))
+            .andExpect(status().isCreated())
+            .andReturn();
+        var partId = objectMapper.readTree(partResult.getResponse().getContentAsString()).get("id").asLong();
+        var request = new EquipamentDto("HP LaserJet Pro M404dn", "HP", "PRINTER", "LASER", List.of(partId));
+
+        mockMvc.perform(post("/api/equipaments")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+            .andExpect(status().isCreated());
+
+        mockMvc.perform(get("/api/equipaments/count"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$", is(1)));
+
+        mockMvc.perform(get("/api/equipaments/search").param("name", "HP LaserJet Pro M404dn"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$", hasSize(1)))
+            .andExpect(jsonPath("$[0].brand", is("HP")));
+    }
 }

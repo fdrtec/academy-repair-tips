@@ -40,6 +40,16 @@ public class EquipamentService {
         return repository.findAll(pageable).map(mapper::toDto);
     }
 
+    @Transactional(readOnly = true)
+    public long count() {
+        return repository.count();
+    }
+
+    @Transactional(readOnly = true)
+    public List<EquipamentDto> findByName(String name) {
+        return repository.findByName(name).stream().map(mapper::toDto).toList();
+    }
+
     @Transactional
     public EquipamentDto update(Long id, EquipamentDto dto) {
         Equipament equipament = repository.findById(id)
