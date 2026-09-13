@@ -38,6 +38,10 @@ O domínio escolhido foi o de manutenção de equipamentos:
 
 A aplicação utiliza MVC como estilo arquitetural e uma organização em camadas para manter cada responsabilidade isolada.
 
+### Entregável 1: Arquitetura do software
+
+O diagrama abaixo apresenta a arquitetura da solução e a relação entre seus principais componentes. Ele corresponde a uma visão arquitetural de componentes, compatível com a representação C4/UML solicitada no desafio, e pode ser reproduzido no Draw.io utilizando os mesmos elementos e relacionamentos.
+
 ```mermaid
 flowchart LR
     Partner[Parceiro / Cliente HTTP] --> Controller[Controller REST]
