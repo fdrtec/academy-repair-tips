@@ -39,8 +39,8 @@ class EquipamentControllerTest {
 
     @BeforeEach
     void setUp() {
-        equipamentRepository.deleteAll();
-        partRepository.deleteAll();
+        equipamentRepository.deleteAllInBatch();
+        partRepository.deleteAllInBatch();
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
         objectMapper = new ObjectMapper();
     }

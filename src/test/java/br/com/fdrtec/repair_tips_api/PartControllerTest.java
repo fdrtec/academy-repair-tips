@@ -41,8 +41,8 @@ class PartControllerTest {
 
     @BeforeEach
     void setUp() {
-        equipamentRepository.deleteAll();
-        repository.deleteAll();
+        equipamentRepository.deleteAllInBatch();
+        repository.deleteAllInBatch();
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
         objectMapper = new ObjectMapper();
     }
