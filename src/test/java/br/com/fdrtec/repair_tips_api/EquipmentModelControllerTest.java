@@ -7,8 +7,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import br.com.fdrtec.repair_tips_api.dto.EquipamentRequest;
-import br.com.fdrtec.repair_tips_api.dto.PartRequest;
+import br.com.fdrtec.repair_tips_api.dto.EquipamentDto;
+import br.com.fdrtec.repair_tips_api.dto.PartDto;
 import br.com.fdrtec.repair_tips_api.repository.EquipamentRepository;
 import br.com.fdrtec.repair_tips_api.repository.PartRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -39,8 +39,8 @@ class EquipamentControllerTest {
 
     @BeforeEach
     void setUp() {
-        equipamentRepository.deleteAll();
-        partRepository.deleteAll();
+        equipamentRepository.deleteAllInBatch();
+        partRepository.deleteAllInBatch();
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
         objectMapper = new ObjectMapper();
     }
@@ -49,12 +49,12 @@ class EquipamentControllerTest {
     void shouldCreateAndRetrieveEquipamentWithParts() throws Exception {
         var partResult = mockMvc.perform(post("/api/parts")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(new PartRequest("Black toner", "HP-56A"))))
+                .content(objectMapper.writeValueAsString(new PartDto("Black toner", "HP-56A"))))
             .andExpect(status().isCreated())
             .andReturn();
 
         var partId = objectMapper.readTree(partResult.getResponse().getContentAsString()).get("id").asLong();
-        var request = new EquipamentRequest(
+        var request = new EquipamentDto(
             "HP LaserJet Pro M404dn",
             "HP",
             "PRINTER",
@@ -80,5 +80,30 @@ class EquipamentControllerTest {
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.id", is((int) modelId)))
             .andExpect(jsonPath("$.parts", hasSize(1)));
+    }
+
+    @Test
+    void shouldCountAndFindEquipamentsByName() throws Exception {
+        var partResult = mockMvc.perform(post("/api/parts")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(new PartDto("Black toner", "HP-56A"))))
+            .andExpect(status().isCreated())
+            .andReturn();
+        var partId = objectMapper.readTree(partResult.getResponse().getContentAsString()).get("id").asLong();
+        var request = new EquipamentDto("HP LaserJet Pro M404dn", "HP", "PRINTER", "LASER", List.of(partId));
+
+        mockMvc.perform(post("/api/equipaments")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+            .andExpect(status().isCreated());
+
+        mockMvc.perform(get("/api/equipaments/count"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$", is(1)));
+
+        mockMvc.perform(get("/api/equipaments/search").param("name", "HP LaserJet Pro M404dn"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$", hasSize(1)))
+            .andExpect(jsonPath("$[0].brand", is("HP")));
     }
 }
