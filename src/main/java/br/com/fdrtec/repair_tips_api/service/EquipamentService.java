@@ -2,7 +2,7 @@ package br.com.fdrtec.repair_tips_api.service;
 
 import br.com.fdrtec.repair_tips_api.dto.EquipamentDto;
 import br.com.fdrtec.repair_tips_api.entity.Equipament;
-import br.com.fdrtec.repair_tips_api.mapper.EquipamentMapper;
+import br.com.fdrtec.repair_tips_api.mapper.GenericMapper;
 import br.com.fdrtec.repair_tips_api.repository.EquipamentRepository;
 import br.com.fdrtec.repair_tips_api.repository.PartRepository;
 import java.util.HashSet;
@@ -19,25 +19,27 @@ public class EquipamentService {
 
     private final EquipamentRepository repository;
     private final PartRepository partRepository;
-    private final EquipamentMapper mapper;
+    private final GenericMapper mapper;
+
+    private static final String[] MANAGED_PROPERTIES = {"id", "createdAt", "updatedAt", "active", "parts", "partIds"};
 
     @Transactional
     public EquipamentDto create(EquipamentDto dto) {
-        Equipament equipament = mapper.toEntity(dto);
+        Equipament equipament = mapper.map(dto, Equipament.class, MANAGED_PROPERTIES);
         equipament.setParts(resolveParts(dto.partIds()));
-        return mapper.toDto(repository.save(equipament));
+        return mapper.map(repository.save(equipament), EquipamentDto.class);
     }
 
     @Transactional(readOnly = true)
     public EquipamentDto findById(Long id) {
         return repository.findById(id)
-            .map(mapper::toDto)
+            .map(equipament -> mapper.map(equipament, EquipamentDto.class))
             .orElseThrow(() -> new ResourceNotFoundException("Equipament", id));
     }
 
     @Transactional(readOnly = true)
     public Page<EquipamentDto> findAll(Pageable pageable) {
-        return repository.findAll(pageable).map(mapper::toDto);
+        return repository.findAll(pageable).map(equipament -> mapper.map(equipament, EquipamentDto.class));
     }
 
     @Transactional(readOnly = true)
@@ -47,16 +49,16 @@ public class EquipamentService {
 
     @Transactional(readOnly = true)
     public List<EquipamentDto> findByName(String name) {
-        return repository.findByName(name).stream().map(mapper::toDto).toList();
+        return repository.findByName(name).stream().map(equipament -> mapper.map(equipament, EquipamentDto.class)).toList();
     }
 
     @Transactional
     public EquipamentDto update(Long id, EquipamentDto dto) {
         Equipament equipament = repository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Equipament", id));
-        mapper.updateFromDto(dto, equipament);
+        mapper.update(dto, equipament, MANAGED_PROPERTIES);
         equipament.setParts(resolveParts(dto.partIds()));
-        return mapper.toDto(repository.save(equipament));
+        return mapper.map(repository.save(equipament), EquipamentDto.class);
     }
 
     @Transactional

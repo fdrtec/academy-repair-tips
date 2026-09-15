@@ -2,7 +2,7 @@ package br.com.fdrtec.repair_tips_api.service;
 
 import br.com.fdrtec.repair_tips_api.dto.PartDto;
 import br.com.fdrtec.repair_tips_api.entity.Part;
-import br.com.fdrtec.repair_tips_api.mapper.PartMapper;
+import br.com.fdrtec.repair_tips_api.mapper.GenericMapper;
 import br.com.fdrtec.repair_tips_api.repository.PartRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -16,25 +16,27 @@ import org.springframework.transaction.annotation.Transactional;
 public class PartService {
 
     private final PartRepository repository;
-    private final PartMapper mapper;
+    private final GenericMapper mapper;
+
+    private static final String[] MANAGED_PROPERTIES = {"id", "createdAt", "updatedAt", "active"};
 
     @Transactional
     public PartDto create(PartDto dto) {
-        Part part = mapper.toEntity(dto);
+        Part part = mapper.map(dto, Part.class, MANAGED_PROPERTIES);
         Part saved = repository.save(part);
-        return mapper.toDto(saved);
+        return mapper.map(saved, PartDto.class);
     }
 
     @Transactional(readOnly = true)
     public PartDto findById(Long id) {
         return repository.findById(id)
-            .map(mapper::toDto)
+            .map(part -> mapper.map(part, PartDto.class))
             .orElseThrow(() -> new ResourceNotFoundException("Part", id));
     }
 
     @Transactional(readOnly = true)
     public Page<PartDto> findAll(Pageable pageable) {
-        return repository.findAll(pageable).map(mapper::toDto);
+        return repository.findAll(pageable).map(part -> mapper.map(part, PartDto.class));
     }
 
     @Transactional(readOnly = true)
@@ -44,15 +46,15 @@ public class PartService {
 
     @Transactional(readOnly = true)
     public List<PartDto> findByName(String name) {
-        return repository.findByName(name).stream().map(mapper::toDto).toList();
+        return repository.findByName(name).stream().map(part -> mapper.map(part, PartDto.class)).toList();
     }
 
     @Transactional
     public PartDto update(Long id, PartDto dto) {
         Part part = repository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Part", id));
-        mapper.updateFromDto(dto, part);
-        return mapper.toDto(repository.save(part));
+        mapper.update(dto, part, MANAGED_PROPERTIES);
+        return mapper.map(repository.save(part), PartDto.class);
     }
 
     @Transactional
