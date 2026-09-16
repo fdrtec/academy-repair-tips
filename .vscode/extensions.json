@@ -1,0 +1,11 @@
+{
+  "recommendations": [
+    "vscjava.vscode-java-pack",
+    "vmware.vscode-boot-dev-pack",
+    "vmware.vscode-spring-boot",
+    "vscjava.vscode-maven",
+    "redhat.vscode-xml",
+    "redhat.vscode-yaml",
+    "shengchen.vscode-checkstyle"
+  ]
+}

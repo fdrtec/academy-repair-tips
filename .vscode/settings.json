@@ -1,0 +1,34 @@
+{
+  "java.jdt.ls.java.home": "${env:JAVA_HOME}",
+  "java.configuration.runtimes": [
+    {
+      "name": "JavaSE-25",
+      "path": "${env:JAVA_HOME}",
+      "default": true
+    }
+  ],
+  "java.configuration.updateBuildConfiguration": "automatic",
+  "java.import.maven.enabled": true,
+  "java.autobuild.enabled": true,
+  "java.compile.nullAnalysis.mode": "automatic",
+  "java.debug.settings.hotCodeReplace": "auto",
+  "java.test.defaultConfig": {
+    "vmArgs": [
+      "-Dspring.profiles.active=test"
+    ]
+  },
+  "java.saveActions.organizeImports": true,
+  "java.format.enabled": true,
+  "maven.executable.path": "./mvnw",
+  "maven.terminal.useJavaHome": true,
+  "spring-boot.ls.java.home": "${env:JAVA_HOME}",
+  "editor.formatOnSave": true,
+  "files.trimTrailingWhitespace": true,
+  "files.insertFinalNewline": true,
+  "[java]": {
+    "editor.defaultFormatter": "redhat.java",
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": "explicit"
+    }
+  }
+}
