@@ -1,0 +1,22 @@
+{
+  "servers": {
+    "owasp-zap": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-remote",
+        "https://localhost:8282",
+        "--silent",
+        "--transport",
+        "http-first",
+        "--header",
+        "Authorization: ${ZAP_API_KEY}"
+      ],
+      "envFile": "${workspaceFolder}/.env",
+      "env": {
+        "NODE_TLS_REJECT_UNAUTHORIZED": "0"
+      }
+    }
+  }
+}
